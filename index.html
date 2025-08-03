@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CTG Score Calculator - Tính di?m CTG</title>
+    <title>CTG Score Calculator</title>
     <style>
         * {
             margin: 0;
@@ -241,14 +241,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>?? CTG Score Calculator</h1>
-            <p>Công c? tính di?m CTG cho bác si s?n khoa</p>
+            <h1>ðŸ«€ CTG Score Calculator</h1>
+            <p>Cardiotocography Assessment Tool for Obstetricians</p>
         </div>
 
         <div class="form-container">
             <form id="ctgForm">
                 <div class="form-group">
-                    <label>1. Nh?p tim thai co b?n (bpm):</label>
+                    <label>1. Baseline Fetal Heart Rate (bpm):</label>
                     <div class="radio-group">
                         <div class="radio-item">
                             <input type="radio" id="hr1" name="heartRate" value="<80">
@@ -270,83 +270,79 @@
                 </div>
 
                 <div class="form-group">
-                    <label>2. Dao d?ng n?i t?i (Variability):</label>
+                    <label>2. Fetal Heart Rate Variability:</label>
                     <div class="radio-group">
                         <div class="radio-item">
                             <input type="radio" id="var1" name="variability" value="<3">
-                            <label for="var1">< 3 bpm<br>(Không phát hi?n)</label>
+                            <label for="var1">< 3 bpm<br>(Undetectable)</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="var2" name="variability" value="3-5">
-                            <label for="var2">3-5 bpm<br>(T?i thi?u)</label>
+                            <label for="var2">3-5 bpm<br>(Minimal)</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="var3" name="variability" value="6-25">
-                            <label for="var3">6-25 bpm<br>(V?a ph?i)</label>
+                            <label for="var3">6-25 bpm<br>(Moderate)</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="var4" name="variability" value=">25">
-                            <label for="var4">> 25 bpm<br>(Ðánh d?u)</label>
+                            <label for="var4">> 25 bpm<br>(Marked)</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="var5" name="variability" value="sinusoidal">
-                            <label for="var5">Hình sin > 20 phút</label>
+                            <label for="var5">Sinusoidal pattern > 20 min</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>3. Nh?p gi?m (Decelerations):</label>
+                    <label>3. Decelerations:</label>
                     <div class="radio-group">
                         <div class="radio-item">
                             <input type="radio" id="dec1" name="deceleration" value="none">
-                            <label for="dec1">Không có</label>
+                            <label for="dec1">None</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="dec2" name="deceleration" value="early">
-                            <label for="dec2">Nh?p gi?m s?m</label>
+                            <label for="dec2">Early Deceleration</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="dec3" name="deceleration" value="variable">
-                            <label for="dec3">Nh?p gi?m b?t d?nh</label>
+                            <label for="dec3">Variable Deceleration</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="dec4" name="deceleration" value="late">
-                            <label for="dec4">Nh?p gi?m mu?n</label>
+                            <label for="dec4">Late Deceleration</label>
                         </div>
                         <div class="radio-item">
                             <input type="radio" id="dec5" name="deceleration" value="prolonged">
-                            <label for="dec5">Nh?p gi?m kéo dài</label>
+                            <label for="dec5">Prolonged Deceleration</label>
                         </div>
                     </div>
 
                     <div id="severitySection" class="severity-section">
-                        <label>M?c d? nh?p gi?m:</label>
+                        <label>Deceleration Severity:</label>
                         <div class="radio-group">
                             <div class="radio-item">
                                 <input type="radio" id="sev1" name="severity" value="mild">
-                                <label for="sev1">Nh?</label>
+                                <label for="sev1">Mild</label>
                             </div>
                             <div class="radio-item">
                                 <input type="radio" id="sev2" name="severity" value="severe">
-                                <label for="sev2">N?ng</label>
+                                <label for="sev2">Severe</label>
                             </div>
                         </div>
-                        <div class="description">
-                            <strong>M?c d? n?ng g?m:</strong><br>
-                            • Nh?p gi?m mu?n: > 15 nh?p/phút t? NTTCB d?n di?m th?p nh?t<br>
-                            • Nh?p gi?m bi?n d?i: di?m th?p nh?t < 70 nh?p/phút và kéo dài > 30 giây HO?C 70-80 nh?p/phút và kéo dài > 60 giây<br>
-                            • Nh?p gi?m kéo dài: di?m th?p nh?t < 80 nh?p/phút<br>
-                            <em>Ngoài các d?c di?m này thì du?c xem là m?c d? nh?</em>
+                        <div class="description" id="severityDescription">
+                            Select deceleration type to see severity criteria
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="calculate-btn">?? Tính di?m CTG</button>
+                <button type="submit" class="calculate-btn">ðŸ§® Calculate CTG Score</button>
             </form>
 
             <div id="result" class="result">
-                <h3>K?t qu? CTG</h3>
+                <h3>CTG Assessment Result</h3>
                 <div class="score" id="scoreValue">-</div>
                 <div class="interpretation" id="interpretation">-</div>
             </div>
@@ -489,24 +485,40 @@
         };
 
         const interpretations = {
-            1: "Bình thu?ng - Thai nhi kh?e m?nh",
-            2: "Nghi ng? - C?n theo dõi thêm",
-            3: "B?t thu?ng - C?n can thi?p",
-            4: "R?t b?t thu?ng - Can thi?p ngay",
-            5: "Nguy k?ch - Can thi?p kh?n c?p",
-            "Unclassified": "Không phân lo?i du?c - C?n dánh giá thêm"
+            1: "Normal - Healthy fetus",
+            2: "Suspicious - Further monitoring required",
+            3: "Abnormal - Intervention needed",
+            4: "Very abnormal - Immediate intervention required",
+            5: "Critical - Emergency intervention required",
+            "Unclassified": "Unclassifiable - Additional assessment needed"
         };
 
-        // Show/hide severity section based on deceleration type
+        const severityDescriptions = {
+            variable: `<strong>Severe Variable Deceleration criteria:</strong><br>
+                      â€¢ Nadir < 70 bpm and duration > 30 seconds, OR<br>
+                      â€¢ Nadir 70-80 bpm and duration > 60 seconds<br>
+                      <em>Otherwise classified as mild</em>`,
+            late: `<strong>Severe Late Deceleration criteria:</strong><br>
+                   â€¢ > 15 bpm decrease from baseline to nadir<br>
+                   <em>Otherwise classified as mild</em>`,
+            prolonged: `<strong>Severe Prolonged Deceleration criteria:</strong><br>
+                        â€¢ Nadir < 80 bpm<br>
+                        <em>Otherwise classified as mild</em>`
+        };
+
+        // Show/hide severity section and update description based on deceleration type
         document.querySelectorAll('input[name="deceleration"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const severitySection = document.getElementById('severitySection');
+                const severityDescription = document.getElementById('severityDescription');
                 const needsSeverity = ['variable', 'late', 'prolonged'].includes(this.value);
                 
                 if (needsSeverity) {
                     severitySection.classList.add('show');
+                    severityDescription.innerHTML = severityDescriptions[this.value];
                 } else {
                     severitySection.classList.remove('show');
+                    severityDescription.innerHTML = 'Select deceleration type to see severity criteria';
                     // Clear severity selection
                     document.querySelectorAll('input[name="severity"]').forEach(s => s.checked = false);
                 }
@@ -523,13 +535,13 @@
             const severity = document.querySelector('input[name="severity"]:checked')?.value || '';
             
             if (!heartRate || !variability || !deceleration) {
-                alert('Vui lòng ch?n d?y d? các thông tin!');
+                alert('Please select all required parameters!');
                 return;
             }
             
             // Check if severity is needed but not selected
             if (['variable', 'late', 'prolonged'].includes(deceleration) && !severity) {
-                alert('Vui lòng ch?n m?c d? nh?p gi?m!');
+                alert('Please select deceleration severity!');
                 return;
             }
             
@@ -537,9 +549,8 @@
             const key = `${heartRate}|${variability}|${deceleration}|${severity}`;
             let score = ctgScores[key];
             
-            // If exact match not found, try with different heart rate ranges
+            // If exact match not found, try with different heart rate ranges or use default
             if (score === undefined) {
-                // Try to find closest match or use default scoring logic
                 score = 3; // Default to 3 if not found
             }
             
@@ -549,7 +560,7 @@
             const interpretation = document.getElementById('interpretation');
             
             scoreValue.textContent = score;
-            interpretation.textContent = interpretations[score] || 'Không xác d?nh du?c';
+            interpretation.textContent = interpretations[score] || 'Unable to determine';
             
             // Apply score-specific styling
             resultDiv.className = `result show score-${score === 'Unclassified' ? '3' : score}`;
