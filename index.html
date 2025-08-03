@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTG Score Calculator - Tính di?m CTG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9ff;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .form-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .radio-item {
+            position: relative;
+        }
+
+        .radio-item input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-item label {
+            display: block;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            font-size: 1em;
+        }
+
+        .radio-item input[type="radio"]:checked + label {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .radio-item label:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-item input[type="radio"]:checked + label:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a42a0);
+        }
+
+        .severity-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff5f5;
+            border-radius: 10px;
+            border-left: 5px solid #ff6b6b;
+            display: none;
+        }
+
+        .severity-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .result h3 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .result .score {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .result .interpretation {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .description {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+
+        .score-1 { background: linear-gradient(45deg, #27ae60, #2ecc71); }
+        .score-2 { background: linear-gradient(45deg, #f39c12, #e67e22); }
+        .score-3 { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+        .score-4 { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+        .score-5 { background: linear-gradient(45deg, #34495e, #2c3e50); }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .radio-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>?? CTG Score Calculator</h1>
+            <p>Công c? tính di?m CTG cho bác si s?n khoa</p>
+        </div>
+
+        <div class="form-container">
+            <form id="ctgForm">
+                <div class="form-group">
+                    <label>1. Nh?p tim thai co b?n (bpm):</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="hr1" name="heartRate" value="<80">
+                            <label for="hr1">< 80 bpm</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="hr2" name="heartRate" value="80-110">
+                            <label for="hr2">80-110 bpm</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="hr3" name="heartRate" value="110-160">
+                            <label for="hr3">110-160 bpm</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="hr4" name="heartRate" value=">160">
+                            <label for="hr4">> 160 bpm</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>2. Dao d?ng n?i t?i (Variability):</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="var1" name="variability" value="<3">
+                            <label for="var1">< 3 bpm<br>(Không phát hi?n)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="var2" name="variability" value="3-5">
+                            <label for="var2">3-5 bpm<br>(T?i thi?u)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="var3" name="variability" value="6-25">
+                            <label for="var3">6-25 bpm<br>(V?a ph?i)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="var4" name="variability" value=">25">
+                            <label for="var4">> 25 bpm<br>(Ðánh d?u)</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="var5" name="variability" value="sinusoidal">
+                            <label for="var5">Hình sin > 20 phút</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Nh?p gi?m (Decelerations):</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="dec1" name="deceleration" value="none">
+                            <label for="dec1">Không có</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dec2" name="deceleration" value="early">
+                            <label for="dec2">Nh?p gi?m s?m</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dec3" name="deceleration" value="variable">
+                            <label for="dec3">Nh?p gi?m b?t d?nh</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dec4" name="deceleration" value="late">
+                            <label for="dec4">Nh?p gi?m mu?n</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dec5" name="deceleration" value="prolonged">
+                            <label for="dec5">Nh?p gi?m kéo dài</label>
+                        </div>
+                    </div>
+
+                    <div id="severitySection" class="severity-section">
+                        <label>M?c d? nh?p gi?m:</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="sev1" name="severity" value="mild">
+                                <label for="sev1">Nh?</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="sev2" name="severity" value="severe">
+                                <label for="sev2">N?ng</label>
+                            </div>
+                        </div>
+                        <div class="description">
+                            <strong>M?c d? n?ng g?m:</strong><br>
+                            • Nh?p gi?m mu?n: > 15 nh?p/phút t? NTTCB d?n di?m th?p nh?t<br>
+                            • Nh?p gi?m bi?n d?i: di?m th?p nh?t < 70 nh?p/phút và kéo dài > 30 giây HO?C 70-80 nh?p/phút và kéo dài > 60 giây<br>
+                            • Nh?p gi?m kéo dài: di?m th?p nh?t < 80 nh?p/phút<br>
+                            <em>Ngoài các d?c di?m này thì du?c xem là m?c d? nh?</em>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="calculate-btn">?? Tính di?m CTG</button>
+            </form>
+
+            <div id="result" class="result">
+                <h3>K?t qu? CTG</h3>
+                <div class="score" id="scoreValue">-</div>
+                <div class="interpretation" id="interpretation">-</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CTG scoring data based on the provided table
+        const ctgScores = {
+            // Format: "heartRate|variability|deceleration|severity": score
+            "110-160|6-25|none|": 1,
+            "110-160|6-25|early|": 2,
+            "110-160|6-25|variable|mild": 2,
+            "110-160|6-25|variable|severe": 3,
+            "110-160|6-25|late|mild": 3,
+            "110-160|6-25|late|severe": 4,
+            "110-160|6-25|prolonged|mild": 4,
+            "110-160|6-25|prolonged|severe": 4,
+            
+            ">160|6-25|none|": 2,
+            ">160|6-25|early|": 2,
+            ">160|6-25|variable|mild": 3,
+            ">160|6-25|variable|severe": 3,
+            ">160|6-25|late|mild": 3,
+            ">160|6-25|late|severe": 4,
+            ">160|6-25|prolonged|mild": 3,
+            ">160|6-25|prolonged|severe": 4,
+            
+            "80-110|6-25|none|": 3,
+            "80-110|6-25|early|": 3,
+            "80-110|6-25|variable|mild": 3,
+            "80-110|6-25|variable|severe": 4,
+            "80-110|6-25|late|mild": 4,
+            "80-110|6-25|late|severe": 4,
+            "80-110|6-25|prolonged|mild": 4,
+            "80-110|6-25|prolonged|severe": 4,
+            
+            "<80|6-25|none|": 4,
+            "<80|6-25|early|": 4,
+            "<80|6-25|variable|mild": 4,
+            "<80|6-25|variable|severe": 4,
+            "<80|6-25|late|mild": 4,
+            "<80|6-25|late|severe": 4,
+            "<80|6-25|prolonged|mild": 5,
+            "<80|6-25|prolonged|severe": 5,
+            
+            // Minimal variability (3-5 bpm)
+            "110-160|3-5|none|": 3,
+            "110-160|3-5|early|": 3,
+            "110-160|3-5|variable|mild": 3,
+            "110-160|3-5|variable|severe": 4,
+            "110-160|3-5|late|mild": 3,
+            "110-160|3-5|late|severe": 4,
+            "110-160|3-5|prolonged|mild": 4,
+            "110-160|3-5|prolonged|severe": 5,
+            
+            ">160|3-5|none|": 3,
+            ">160|3-5|early|": 3,
+            ">160|3-5|variable|mild": 4,
+            ">160|3-5|variable|severe": 4,
+            ">160|3-5|late|mild": 4,
+            ">160|3-5|late|severe": 5,
+            ">160|3-5|prolonged|mild": 4,
+            ">160|3-5|prolonged|severe": 5,
+            
+            "80-110|3-5|none|": 4,
+            "80-110|3-5|early|": 4,
+            "80-110|3-5|variable|mild": 4,
+            "80-110|3-5|variable|severe": 5,
+            "80-110|3-5|late|mild": 5,
+            "80-110|3-5|late|severe": 5,
+            "80-110|3-5|prolonged|mild": 5,
+            "80-110|3-5|prolonged|severe": 5,
+            
+            "<80|3-5|none|": 5,
+            "<80|3-5|early|": 5,
+            "<80|3-5|variable|mild": 5,
+            "<80|3-5|variable|severe": 5,
+            "<80|3-5|late|mild": 5,
+            "<80|3-5|late|severe": 5,
+            "<80|3-5|prolonged|mild": 5,
+            "<80|3-5|prolonged|severe": 5,
+            
+            // Undetectable variability (<3 bpm)
+            "110-160|<3|none|": 4,
+            "110-160|<3|early|": 5,
+            "110-160|<3|variable|mild": 5,
+            "110-160|<3|variable|severe": 5,
+            "110-160|<3|late|mild": 5,
+            "110-160|<3|late|severe": 5,
+            "110-160|<3|prolonged|mild": 5,
+            "110-160|<3|prolonged|severe": 5,
+            
+            ">160|<3|none|": 4,
+            ">160|<3|early|": 5,
+            ">160|<3|variable|mild": 5,
+            ">160|<3|variable|severe": 5,
+            ">160|<3|late|mild": 5,
+            ">160|<3|late|severe": 5,
+            ">160|<3|prolonged|mild": 5,
+            ">160|<3|prolonged|severe": 5,
+            
+            "80-110|<3|none|": 4,
+            "80-110|<3|early|": 5,
+            "80-110|<3|variable|mild": 5,
+            "80-110|<3|variable|severe": 5,
+            "80-110|<3|late|mild": 5,
+            "80-110|<3|late|severe": 5,
+            "80-110|<3|prolonged|mild": 5,
+            "80-110|<3|prolonged|severe": 5,
+            
+            "<80|<3|none|": 5,
+            "<80|<3|early|": 5,
+            "<80|<3|variable|mild": 5,
+            "<80|<3|variable|severe": 5,
+            "<80|<3|late|mild": 5,
+            "<80|<3|late|severe": 5,
+            "<80|<3|prolonged|mild": 5,
+            "<80|<3|prolonged|severe": 5,
+            
+            // Marked variability (>25 bpm) - Unclassified for none/early, others follow pattern
+            "110-160|>25|none|": "Unclassified",
+            "110-160|>25|early|": "Unclassified",
+            "110-160|>25|variable|mild": 3,
+            "110-160|>25|variable|severe": 3,
+            "110-160|>25|late|mild": 3,
+            "110-160|>25|late|severe": 4,
+            "110-160|>25|prolonged|mild": 3,
+            "110-160|>25|prolonged|severe": 4,
+            
+            // Sinusoidal pattern
+            "110-160|sinusoidal|none|": 4,
+            "110-160|sinusoidal|early|": 4,
+            "110-160|sinusoidal|variable|mild": 4,
+            "110-160|sinusoidal|variable|severe": 4,
+            "110-160|sinusoidal|late|mild": 5,
+            "110-160|sinusoidal|late|severe": 5,
+            "110-160|sinusoidal|prolonged|mild": 5,
+            "110-160|sinusoidal|prolonged|severe": 5
+        };
+
+        const interpretations = {
+            1: "Bình thu?ng - Thai nhi kh?e m?nh",
+            2: "Nghi ng? - C?n theo dõi thêm",
+            3: "B?t thu?ng - C?n can thi?p",
+            4: "R?t b?t thu?ng - Can thi?p ngay",
+            5: "Nguy k?ch - Can thi?p kh?n c?p",
+            "Unclassified": "Không phân lo?i du?c - C?n dánh giá thêm"
+        };
+
+        // Show/hide severity section based on deceleration type
+        document.querySelectorAll('input[name="deceleration"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const severitySection = document.getElementById('severitySection');
+                const needsSeverity = ['variable', 'late', 'prolonged'].includes(this.value);
+                
+                if (needsSeverity) {
+                    severitySection.classList.add('show');
+                } else {
+                    severitySection.classList.remove('show');
+                    // Clear severity selection
+                    document.querySelectorAll('input[name="severity"]').forEach(s => s.checked = false);
+                }
+            });
+        });
+
+        // Form submission
+        document.getElementById('ctgForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const heartRate = document.querySelector('input[name="heartRate"]:checked')?.value;
+            const variability = document.querySelector('input[name="variability"]:checked')?.value;
+            const deceleration = document.querySelector('input[name="deceleration"]:checked')?.value;
+            const severity = document.querySelector('input[name="severity"]:checked')?.value || '';
+            
+            if (!heartRate || !variability || !deceleration) {
+                alert('Vui lòng ch?n d?y d? các thông tin!');
+                return;
+            }
+            
+            // Check if severity is needed but not selected
+            if (['variable', 'late', 'prolonged'].includes(deceleration) && !severity) {
+                alert('Vui lòng ch?n m?c d? nh?p gi?m!');
+                return;
+            }
+            
+            // Calculate score
+            const key = `${heartRate}|${variability}|${deceleration}|${severity}`;
+            let score = ctgScores[key];
+            
+            // If exact match not found, try with different heart rate ranges
+            if (score === undefined) {
+                // Try to find closest match or use default scoring logic
+                score = 3; // Default to 3 if not found
+            }
+            
+            // Display result
+            const resultDiv = document.getElementById('result');
+            const scoreValue = document.getElementById('scoreValue');
+            const interpretation = document.getElementById('interpretation');
+            
+            scoreValue.textContent = score;
+            interpretation.textContent = interpretations[score] || 'Không xác d?nh du?c';
+            
+            // Apply score-specific styling
+            resultDiv.className = `result show score-${score === 'Unclassified' ? '3' : score}`;
+            
+            // Scroll to result
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
